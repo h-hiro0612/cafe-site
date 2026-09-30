@@ -16,6 +16,11 @@ COPY ./src /var/www/html/
 WORKDIR /var/www/html/
 
 # Composerパッケージのインストール（src直下の composer.json を参照します）
+# src フォルダ配下のファイルをコピー
+COPY src/ /var/www/html/
+
+# 作業ディレクトリを /var/www/html（または src）に移動
+WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 80
