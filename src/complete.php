@@ -26,8 +26,8 @@ function createMailer() {
         $mail->SMTPAuth   = true;
         $mail->Username   = getenv('SMTP_USER'); // Renderで設定したGmailアドレス
         $mail->Password   = getenv('SMTP_PASS'); // Googleのアプリパスワード
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = 465;
     } else {
         // 【ローカル環境：Docker】Mailpitへ送信
         $mail->Host       = 'mailpit';
