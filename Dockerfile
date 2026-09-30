@@ -1,7 +1,11 @@
 FROM php:8.2-apache
 
-# 必要な拡張モジュール（PDO MySQL）をインストール
-RUN docker-php-ext-install pdo pdo_mysql mysqli
+# zip, unzip, git 等のツールと PDO MySQL 拡張をまとめてインストール
+RUN apt-get update && apt-get install -y \
+    zip \
+    unzip \
+    git \
+    && docker-php-ext-install pdo pdo_mysql mysqli
 
 # Apacheの mod_rewrite を有効化
 RUN a2enmod rewrite
@@ -15,12 +19,7 @@ COPY ./src /var/www/html/
 # 作業ディレクトリを /var/www/html に指定
 WORKDIR /var/www/html/
 
-# Composerパッケージのインストール（src直下の composer.json を参照します）
-# src フォルダ配下のファイルをコピー
-COPY src/ /var/www/html/
-
-# 作業ディレクトリを /var/www/html（または src）に移動
-WORKDIR /var/www/html
+# Composerパッケージのインストール
 RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 80
