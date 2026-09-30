@@ -1,0 +1,783 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+a {
+    text-decoration: none;
+}
+
+section#concept, section#menu, section#news, section#access, section#contact {
+    padding: 64px 16px 64px;
+}
+
+.concept,
+.menu,
+.news,
+.access,
+.contact {
+    opacity: 0;
+    transform: translateY(80px);
+    transition: opacity 1s ease, transform 0.8s ease;
+}
+
+.concept.is-show,
+.menu.is-show,
+.news.is-show,
+.access.is-show,
+.contact.is-show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.more_btn {
+    width: 150px;
+    border: 1px solid #333;
+    background: #fff;
+    padding: 12px;
+    margin: 32px auto;
+    text-align: center;
+    border-radius: 4px;
+    color: #333;
+    transition: all .3s;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* ヘッダー */
+ header {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 32px;
+    z-index: 100;        
+    box-sizing: border-box;
+}
+
+.sub-header {
+    padding: 16px;
+    box-sizing: border-box;
+    background: #B6837B;
+}
+
+.sub-header .header_nav ul {
+    display: flex;
+    justify-content: flex-end;
+    gap: 31px;
+    list-style: none;
+}
+
+.sub-header .header_nav ul a {
+    color: #000;
+    font-size: 21px;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "游明朝", "MS PMincho", serif;
+    transition: opacity .3s;
+}
+
+.hamburger {
+    display: none;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 30;
+    background-color: rgba(190, 171, 158, 0.863);
+}
+
+.hamburger span {
+    width: 30px;
+    height: 3px;
+    background-color: #fff;
+    position: absolute;
+    left: 10px;
+    transition: all 0.4s;
+    border-radius: 4px;
+}
+
+.hamburger span:nth-of-type(1) {
+  top: 16px;
+}
+
+.hamburger span:nth-of-type(2) {
+  top: 25px;
+}
+
+.hamburger span:nth-of-type(3) {
+  top: 34px;
+}
+
+.hamburger.open span:nth-of-type(1) {
+  transform: translateY(9px) rotate(-315deg);
+}
+
+.hamburger.open span:nth-of-type(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-of-type(3) {
+  transform: translateY(-9px) rotate(315deg);
+}
+
+.home-header .header_nav ul {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+    justify-content: flex-end;
+    margin: 0;
+}
+
+.home-header .header_nav ul li a {
+    display: inline-block;
+    padding-bottom: 3px;
+    background-image: linear-gradient(#fff, #fff);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 0 1px;
+    transition: all 0.3s;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "游明朝", "MS PMincho", serif;
+    color: #fff;
+    font-size: 21px;
+    text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ヒーローセクション */
+
+section.hero {
+    position: relative; 
+    width: 100%;
+    height: 100vh;      
+    box-sizing: border-box;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero_content {
+    position: absolute;
+    bottom: 35%;
+    left: 13%;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "游明朝", "MS PMincho", serif;
+    color: #fff;
+}
+
+.hero_content h1 {
+    font-size: 112px;
+    margin-bottom: 0;
+    text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.hero_content p {
+    font-size: 32px;
+    margin: 0;
+    text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* こだわりセクション */
+section#concept {
+   background: #F5EEE8;
+}
+
+section h2 {
+    text-align: center;
+    font-size: 32px;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "游明朝", "MS PMincho", serif;
+    margin: 0;
+    padding-bottom: 21px;
+}
+
+.concept-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    gap: 16px;
+}
+
+.concept-image {
+    width: 45%;
+    max-width: 500px;
+}
+
+.concept-image img {
+    width: 100%;
+    display: block;
+}
+
+.concept-text {
+    width: 50%;
+}
+
+/* メニュー セクション*/
+section#menu {
+    background: #B6837B;
+}
+
+.menu-items {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.menu-item {
+    width: 30%;
+    max-width: 350px;
+}
+
+.menu-item img {
+    width: 100%;
+    display: block;
+}
+
+#menu a {
+    color: #333;
+}
+
+.menu-detail {
+    text-align: center;
+}
+
+.carousel-dots {
+    display: none;
+}
+
+.carousel-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background-color: #b4b3b3;
+  cursor: pointer;
+}
+
+.carousel-dots .dot.active {
+  background-color: #333;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); 
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.is-active {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 80%;
+    max-height: 80vh;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+#modal-caption {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* お知らせセクション */
+#news {
+    background: #EFEFEF;
+}
+
+.news-item {
+    display: flex;
+    justify-content: flex-start;
+    border: 1px solid #333;
+    background: #ffffff;
+    margin-bottom: 16px;
+    padding: 12px;
+    gap: 24px;
+}
+
+.news-item-pic {
+    width: 30%;
+    max-width: 350px;
+}
+
+.news-item-pic img {
+    width: 100%;
+    display: block;
+}
+
+.news-item-tex {
+    width: 45%;
+    align-self: center;
+}
+
+/* 店舗案内 */
+#access {
+    background: #B6947B;
+}
+
+.access-container {
+    background: #F6F0F0;
+    padding: 21px;
+}
+
+.access-map {
+    text-align: center;
+}
+
+.access-details dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.access-details dl dt {
+    width: 25%;
+    box-sizing: border-box;
+    padding: 12px 0 12px 12px;
+    text-align: right;
+}
+
+.access-details dl dd {
+    width: 50%;
+    box-sizing: border-box;
+    padding: 12px 12px 12px 0;
+    text-align: left;
+    margin-left: 0;
+}
+
+/* お問い合わせ */
+.contact-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.contact-tex {
+    width: 65%;
+    box-sizing: border-box;
+}
+
+.contact-pic {
+    width: 30%;
+    max-width: 350px;
+    box-sizing: border-box;
+}
+
+.contact-pic img {
+    width: 100%;
+    display: block;
+}
+
+.contact-btn {
+    color: #333;
+    width: 180px;
+    padding: 12px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin: 32px auto 0;
+}
+
+/* フッター */
+footer {
+    position: relative;
+    max-height: 350px;
+    overflow: hidden;
+}
+
+.footer-image {
+   width: 100%;
+   overflow: hidden;
+}
+
+.footer-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: .4;
+
+}
+
+.footer_content {
+  background-image: url(../images/hero-image.png);
+  background-position: top left;
+  background-color: rgba(255,255,255,0.5);
+  background-blend-mode: lighten;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  padding: 64px 0;
+}
+
+.footer_content h1 {
+    text-align: center;
+    margin: 0;
+    padding-bottom: 32px;
+}
+
+.footer_nav ul {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+    justify-content: center; 
+    margin: 0;
+}
+
+.footer_content h1 {
+    color: #000;
+}
+
+.footer_content ul li a {
+    display: inline-block;
+    padding-bottom: 3px;
+    background-image: linear-gradient(#000, #000);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 0 1px;
+    transition: all 0.3s;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "游明朝", "MS PMincho", serif;
+    color: #000;
+    font-size: 21px;
+    text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+footer small {
+    display: block;
+    text-align: center;
+    margin-top: 24px;
+}
+
+@media(max-width: 767px) {
+    .hamburger {
+        display: block!important;
+        z-index: 9999!important;    
+    }
+
+    .header_nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(30, 30, 30, 0.95); /* 和風に合う暗めの透け背景 */
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        /* 初期状態：画面の上に隠しておく */
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s ease;
+        z-index: 90;
+    }
+
+    /* メニューが開いた状態（.activeがついたとき） */
+    .header_nav.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* スマホ時のメニューリスト（縦並び） */
+    .header_nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+        padding: 0;
+    }
+
+    .header_nav ul li a {
+        font-size: 24px;
+    }
+
+    .header_nav ul li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.6); 
+    }
+
+    .hero_content {
+        left: 5%;
+    }
+
+    .hero_content h1 {
+        font-size: 64px;
+        padding: 0 16px;
+    }
+
+    .hero_content p {
+        font-size: 18px;
+        padding: 0 16px;
+    }
+
+    /* こだわりセクション */
+    .concept-container {
+        flex-direction: column;
+    }
+
+    .concept-image {
+        width: 100%;
+    }
+
+    .concept-text {
+        width: 100%;
+    }
+
+    /* メニュー */
+    .menu-items {
+        display: flex;
+        transition: transform 0.5s ease;
+        justify-content: normal;
+        padding: 0;
+        box-sizing: border-box;
+        gap: 0;
+    }
+
+    .menu-item {
+        max-width: 100%;
+        flex: 0 0 100%;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .menu-container {
+        overflow: hidden;
+    }
+
+    .menu-item img {
+        width: 100%;
+    }
+
+    .carousel-dots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    /* 店舗案内 */
+    .access-map iframe {
+        width: 100%;
+        height: 250px;
+    }
+
+    .access-details dl {
+        display: block;
+    }
+
+    .access-details dl dt {
+        padding: 12px;
+        text-align: center;
+        width: 100%;
+        border-top: 1px solid #333;
+        border-right: 1px solid #333;
+        border-left: 1px solid #333;
+        background: #e7e3e0;
+    }
+
+    .access-details dl dd {
+        padding: 12px;
+        text-align: center;
+        width: 100%;
+        border-top: 1px solid #333;
+        border-right: 1px solid #333;
+        border-left: 1px solid #333;
+    }
+
+    .access-details dl dd:nth-of-type(6) {
+        border-bottom: 1px solid #333;
+    }
+
+    .access-details span {
+        display: none;
+    }
+
+    /* お問い合わせ */
+    .contact-container {
+        flex-direction: column-reverse;
+
+    }
+
+    .contact-tex {
+        width: 100%;
+    }
+
+    .contact-pic {
+        width: 100%;
+    }
+
+    /* フッター */
+    .footer_nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center; 
+    margin: 0;
+    padding-left: 0;
+    }
+}
+
+@media (hover: hover) {
+    .header_nav ul li a:hover {
+        background-position: bottom left;
+        background-size: 100% 1px;
+        transform: scale(1.08);
+    }
+
+    .footer_content ul li a:hover {
+        background-position: bottom left;
+        background-size: 100% 1px;
+        transform: scale(1.08);
+    }
+
+    .more_btn:hover {
+        transform: scale(1.05);
+    }
+
+    header.sub-header .header_nav ul a:hover {
+        opacity: .5;
+    }
+}
+
+/* お問い合わせ */
+section.contact-form {
+    background: #F5EEE8;
+    padding: 120px 0 340px;
+    height: 50vh;
+}
+
+.contact-form-container h1 {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "游明朝", "MS PMincho", serif;
+    text-align: center;
+    margin: 0;
+}
+
+.contact-form-container label {
+    width: 200px;
+    flex-shrink: 0;
+    text-align: right;
+}
+
+form.form {
+    padding: 64px 0;
+}
+
+.form-group {
+    padding: 8px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    justify-content: center;
+}
+
+span.required {
+    display: inline-block;
+    margin-left: 12px;
+    padding: 4px;
+    background: rgb(178, 16, 43);
+    color: #fff;
+    border-radius: 4px;
+}
+
+.form-group input, .form-group textarea {
+    width: 600px;
+    padding: 8px;
+}
+
+.form-btn, .back_btn {
+    text-align: center;
+    margin-top: 64px;
+}
+
+.form-btn input, .form-btn button, .back_btn a {
+    display: inline-block;
+    padding: 12px 16px;
+    background:rgb(228, 220, 217);
+    cursor: pointer;
+    border-radius: 4px;
+    width: 150px;
+    transition: all .2s;
+    font-size: 16px;
+}
+
+.back_btn a {
+    color: #000;
+    border: 1px solid #333;
+}
+
+.form-btn input:hover, .form-btn button:hover, .back_btn a:hover {
+    opacity: .5;
+}
+
+/* お問い合わせ確認 */
+.confirm-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-group dt {
+    width: 300px;
+    text-align: right;
+}
+
+.confirm-group dd {
+    width: 400px;
+    padding: 8px;
+    margin-left: 20px;
+}
+
+/* お問い合わせ完了 */
+.contact-complete {
+    margin-top: 64px;
+}
+
+.contact-complete p {
+    text-align: center;
+}

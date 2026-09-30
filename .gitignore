@@ -1,0 +1,13 @@
+# 特定のファイルを除外
+.env
+database.sqlite
+
+# フォルダ全体を除外（末尾に / をつける）
+node_modules/
+vendor/
+.idea/
+.vscode/
+
+# 特定の拡張子をすべて除外
+*.log
+*.tmp
