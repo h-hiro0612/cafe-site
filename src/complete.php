@@ -19,6 +19,8 @@ function createMailer() {
     $mail->isSMTP();
     $mail->CharSet = 'UTF-8';
 
+    $mail->Timeout = 10;
+
     // 環境変数 APP_ENV による自動分岐
     if (getenv('APP_ENV') === 'production') {
         // 【本番環境：Render】Gmail経由で送信
