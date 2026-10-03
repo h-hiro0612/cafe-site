@@ -781,3 +781,9 @@ span.required {
 .contact-complete p {
     text-align: center;
 }
+
+
+/* メニュー一覧 */
+section.menu-index {
+    background: #F5EEE8;
+}
