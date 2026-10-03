@@ -87,7 +87,11 @@ try {
 
 } catch (Exception $e) {
     // 開発時の確認用ログ（本番ではエラーログ出力など）
-    error_log("Mail Error: " . $e->getMessage());
+    echo "<div style='color:red; background:#fee; padding:15px; margin:20px; border:1px solid red;'>";
+    echo "<h3>メール送信エラーが発生しました</h3>";
+    echo "<p>エラー詳細: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
+    echo "</div>";
+    exit;
 }
 ?>
   <section class="contact-form">
