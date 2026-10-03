@@ -95,7 +95,7 @@ try {
     }
 
     // 成功したら完了画面へ転送（リダイレクト）
-    header('Location: contact_complete.php');
+    header('Location: ./contact_complete.php');
     exit;
 
 } catch (Exception $e) {
