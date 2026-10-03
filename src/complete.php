@@ -21,20 +21,33 @@ function createMailer() {
 
     $mail->Timeout = 10;
 
+    // getenv, $_ENV, $_SERVER のいずれかで APP_ENV を取得
+    $app_env = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? ($_SERVER['APP_ENV'] ?? 'local'));
+
     // 環境変数 APP_ENV による自動分岐
-    if (getenv('APP_ENV') === 'production') {
-        // 【本番環境：Render】Resend経由で送信
-        $mail->Host       = 'smtp.resend.com';
+    if ($app_env === 'production') {
+        // 【本番環境：Render】
+        // 環境変数を確実に取り出す
+        $host     = getenv('MAIL_HOST')     ?: ($_ENV['MAIL_HOST']     ?? 'smtp.resend.com');
+        $username = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? 'resend');
+        $password = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? '');
+        $port     = getenv('MAIL_PORT')     ?: ($_ENV['MAIL_PORT']     ?? 587);
+
+        // 万が一パスワード（APIキー）が空の場合は強制的にエラーを出す
+        if (empty($password)) {
+            throw new Exception("Renderの環境変数（MAIL_PASSWORD）が読み込めていません。");
+        }
+
+        $mail->Host       = $host;
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'resend';                   // ユーザー名は固定で 'resend'
-        $mail->Password   = getenv('RESEND_API_KEY');   // Renderで設定するAPIキー
+        $mail->Username   = $username;
+        $mail->Password   = $password;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        $mail->Port       = (int)$port;
     } else {
-        // 【ローカル環境：Docker】Mailpitへ送信
-        $mail->Host       = 'mailpit';
-        $mail->Port       = 1025;
-        $mail->SMTPAuth   = false;
+        // 【ローカル環境 or APP_ENVが取得できていない場合】
+        // デバッグ用：もし本番でここを通ってしまったら気づけるようにエラーを投げる
+        throw new Exception("APP_ENVが判定できませんでした。（現在の判定値: '{$app_env}'）");
     }
     return $mail;
 }
