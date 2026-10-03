@@ -18,7 +18,7 @@ function createMailer() {
     $mail = new PHPMailer(true);
     $mail->isSMTP();
     $mail->CharSet = 'UTF-8';
-    $mail->Timeout = 10;
+    $mail->Timeout = 20; // タイムアウトを20秒に延長
 
     // APP_ENV の取得（getenv / $_ENV / $_SERVER から順に確認）
     $app_env = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? ($_SERVER['APP_ENV'] ?? 'local'));
@@ -30,23 +30,33 @@ function createMailer() {
         $username = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? ($_SERVER['MAIL_USERNAME'] ?? 'resend'));
         $port     = getenv('MAIL_PORT')     ?: ($_ENV['MAIL_PORT']     ?? ($_SERVER['MAIL_PORT']     ?? 587));
 
-        // APIキー（パスワード）の取得：RESEND_API_KEY または MAIL_PASSWORD のどちらでも読み込めるように設定
+        // APIキー（パスワード）の取得
         $password = getenv('RESEND_API_KEY') ?: ($_ENV['RESEND_API_KEY'] ?? ($_SERVER['RESEND_API_KEY'] ?? ''));
         if (empty($password)) {
             $password = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? ($_SERVER['MAIL_PASSWORD'] ?? ''));
         }
 
-        // 万が一どちらのキー名でも設定値が取得できなかった場合のエラー
         if (empty($password)) {
-            throw new Exception("Renderの環境変数（RESEND_API_KEY または MAIL_PASSWORD）が読み込めていません。RenderのEnvironment設定をご確認ください。");
+            throw new Exception("Renderの環境変数（RESEND_API_KEY または MAIL_PASSWORD）が読み込めていません。");
         }
 
         $mail->Host       = $host;
         $mail->SMTPAuth   = true;
         $mail->Username   = $username;
         $mail->Password   = $password;
+
+        // STARTTLS と ポート587 を明示的に指定
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = (int)$port;
+
+        // クラウド環境での SSL/TLS 接続時の検証エラーによる接続失敗を防止
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer'       => false,
+                'verify_peer_name'  => false,
+                'allow_self_signed' => true,
+            ],
+        ];
     } else {
         // 【ローカル環境 or APP_ENVが取得できていない場合】
         throw new Exception("APP_ENVが判定できませんでした。（現在の判定値: '{$app_env}'）");
@@ -63,7 +73,7 @@ try {
                     ? (getenv('MAIL_FROM_ADDRESS') ?: ($_ENV['MAIL_FROM_ADDRESS'] ?? ($_SERVER['MAIL_FROM_ADDRESS'] ?? 'onboarding@resend.dev'))) 
                     : 'admin@example.com';
 
-    // 管理者通知用アドレスの取得（ADMIN_EMAIL や SMTP_USER などを順に探す）
+    // 管理者通知用アドレスの取得
     $admin_email = getenv('ADMIN_EMAIL') ?: ($_ENV['ADMIN_EMAIL'] ?? ($_SERVER['ADMIN_EMAIL'] ?? ''));
     if (empty($admin_email)) {
         $admin_email = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? ($_SERVER['SMTP_USER'] ?? 'admin@example.com'));
