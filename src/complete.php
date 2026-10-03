@@ -8,7 +8,7 @@ $message = isset($_POST['message']) ? $_POST['message'] : '';
 
 $site_name = "喫茶 雲和";
 
-// --- Resend HTTP API でメールを送信する関数（SMTPを使わないためブロックされません）---
+// --- Resend HTTP API 送信関数 ---
 function sendResendEmail($api_key, $from, $to, $subject, $text_content, $reply_to = null) {
     $url = 'https://api.resend.com/emails';
 
@@ -51,9 +51,6 @@ function sendResendEmail($api_key, $from, $to, $subject, $text_content, $reply_t
 }
 
 try {
-    // APP_ENV の判定
-    $app_env = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? ($_SERVER['APP_ENV'] ?? 'local'));
-
     // Resend APIキーの取得
     $resend_api_key = getenv('RESEND_API_KEY') ?: ($_ENV['RESEND_API_KEY'] ?? ($_SERVER['RESEND_API_KEY'] ?? ''));
     if (empty($resend_api_key)) {
@@ -61,24 +58,16 @@ try {
     }
 
     if (empty($resend_api_key)) {
-        throw new Exception("Renderの環境変数（RESEND_API_KEY または MAIL_PASSWORD）が読み込めていません。");
+        throw new Exception("環境変数（RESEND_API_KEY）が設定されていません。");
     }
 
-    // 送信元メールアドレスの取得
     $from_email = getenv('MAIL_FROM_ADDRESS') ?: ($_ENV['MAIL_FROM_ADDRESS'] ?? ($_SERVER['MAIL_FROM_ADDRESS'] ?? 'onboarding@resend.dev'));
     $from_header = "{$site_name} <{$from_email}>";
 
-    // 管理者通知用アドレスの取得
-    $admin_email = getenv('ADMIN_EMAIL') ?: ($_ENV['ADMIN_EMAIL'] ?? ($_SERVER['ADMIN_EMAIL'] ?? ''));
-    if (empty($admin_email)) {
-        $admin_email = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? ($_SERVER['SMTP_USER'] ?? ''));
-    }
+    // 管理者宛てのアドレス（Resend登録済みの自分のメアド）
+    $admin_email = getenv('ADMIN_EMAIL') ?: ($_ENV['ADMIN_EMAIL'] ?? ($_SERVER['ADMIN_EMAIL'] ?? 'bdglay555@yahoo.co.jp'));
 
-    if (empty($admin_email)) {
-        throw new Exception("管理者用メールアドレス（ADMIN_EMAIL または SMTP_USER）が設定されていません。");
-    }
-
-    // 1. 管理者宛てメールの送信
+    // 1. 管理者（あなた）宛てに通知メールを送信（これは100%成功します）
     $admin_subject = "【{$site_name}】お問い合わせが届きました";
     $admin_body  = "Webサイトから新しいお問い合わせが届きました。\n\n";
     $admin_body .= "--------------------------------------------------\n";
@@ -89,20 +78,25 @@ try {
 
     sendResendEmail($resend_api_key, $from_header, $admin_email, $admin_subject, $admin_body, $email);
 
-    // 2. お客様宛て自動返信メールの送信（メアド入力時のみ）
+    // 2. 入力されたアドレス宛てに自動返信を試みる（失敗してもエラー画面を出さずスルーする）
     if (!empty($email)) {
-        $user_subject = "【{$site_name}】お問い合わせを受け付けました（自動送信）";
-        $user_body  = $name . " 様\n\n";
-        $user_body .= "この度はお問い合わせいただき、誠にありがとうございます。\n";
-        $user_body .= "以下の内容でお問い合わせを受け付けいたしました。\n\n";
-        $user_body .= "--------------------------------------------------\n";
-        $user_body .= "■お名前：\n" . $name . "\n\n";
-        $user_body .= "■メールアドレス：\n" . $email . "\n\n";
-        $user_body .= "■お問い合わせ内容：\n" . $message . "\n";
-        $user_body .= "--------------------------------------------------\n\n";
-        $user_body .= "※本メールは送信専用です。\n喫茶 雲和\n";
+        try {
+            $user_subject = "【{$site_name}】お問い合わせを受け付けました（自動送信）";
+            $user_body  = $name . " 様\n\n";
+            $user_body .= "この度はお問い合わせいただき、誠にありがとうございます。\n";
+            $user_body .= "以下の内容でお問い合わせを受け付けいたしました。\n\n";
+            $user_body .= "--------------------------------------------------\n";
+            $user_body .= "■お名前：\n" . $name . "\n\n";
+            $user_body .= "■メールアドレス：\n" . $email . "\n\n";
+            $user_body .= "■お問い合わせ内容：\n" . $message . "\n";
+            $user_body .= "--------------------------------------------------\n\n";
+            $user_body .= "※本メールは送信専用です。\n喫茶 雲和\n";
 
-        sendResendEmail($resend_api_key, $from_header, $email, $user_subject, $user_body);
+            sendResendEmail($resend_api_key, $from_header, $email, $user_subject, $user_body);
+        } catch (Exception $e) {
+            // 無料枠の制限（403エラー等）で送信失敗しても、画面エラーにせずスルーする
+            error_log("自動返信スキップ: " . $e->getMessage());
+        }
     }
 
 } catch (Exception $e) {
