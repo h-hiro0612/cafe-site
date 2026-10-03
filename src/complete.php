@@ -23,13 +23,13 @@ function createMailer() {
 
     // 環境変数 APP_ENV による自動分岐
     if (getenv('APP_ENV') === 'production') {
-        // 【本番環境：Render】Gmail経由で送信
-        $mail->Host       = 'smtp.gmail.com';
+        // 【本番環境：Render】Resend経由で送信
+        $mail->Host       = 'smtp.resend.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = getenv('SMTP_USER'); // Renderで設定したGmailアドレス
-        $mail->Password   = getenv('SMTP_PASS'); // Googleのアプリパスワード
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port       = 465;
+        $mail->Username   = 'resend';                   // ユーザー名は固定で 'resend'
+        $mail->Password   = getenv('RESEND_API_KEY');   // Renderで設定するAPIキー
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
     } else {
         // 【ローカル環境：Docker】Mailpitへ送信
         $mail->Host       = 'mailpit';
@@ -40,11 +40,14 @@ function createMailer() {
 }
 
 try {
-    $admin_email = getenv('SMTP_USER') ?: 'admin@example.com';
+    // 本番環境（Resend初期状態）の場合、送信元は onboarding@resend.dev を使用
+    // ※管理者通知の受信用メールアドレス（自分のGmailなど）は環境変数または直接指定
+    $from_email   = (getenv('APP_ENV') === 'production') ? 'onboarding@resend.dev' : (getenv('SMTP_USER') ?: 'admin@example.com');
+    $admin_email  = getenv('ADMIN_EMAIL') ?: (getenv('SMTP_USER') ?: 'admin@example.com');
 
     // 1. 管理者宛てメールの送信
     $adminMail = createMailer();
-    $adminMail->setFrom($admin_email, $site_name);
+    $adminMail->setFrom($from_email, $site_name);
     $adminMail->addAddress($admin_email); // 管理者（自分）へ届く
     if (!empty($email)) {
         $adminMail->addReplyTo($email, $name); // フォーム送信者への返信設定
@@ -64,7 +67,7 @@ try {
     // 2. お客様宛て自動返信メールの送信（メアドが入力されている場合のみ）
     if (!empty($email)) {
         $userMail = createMailer();
-        $userMail->setFrom($admin_email, $site_name);
+        $userMail->setFrom($from_email, $site_name);
         $userMail->addAddress($email, $name); // お客様へ届く
 
         $userMail->Subject = "【{$site_name}】お問い合わせを受け付けました（自動送信）";
