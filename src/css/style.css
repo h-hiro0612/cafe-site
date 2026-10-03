@@ -519,6 +519,10 @@ footer small {
         visibility: visible;
     }
 
+    .sub-header .header_nav ul a {
+        color: #fff;
+    }
+
     /* スマホ時のメニューリスト（縦並び） */
     .header_nav ul {
         flex-direction: column;
