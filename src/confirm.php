@@ -4,7 +4,7 @@
   <section class="contact-form">
     <div class="contact-form-container container">
       <h1>お問い合わせ-確認-</h1>
-      <form action="/contact_process.php" method="post" class="form">
+      <form action="./contact_process.php" method="post" class="form">
         
         <input type="hidden" name="name" value="<?php echo h($_POST['name']); ?>">
         <input type="hidden" name="email" value="<?php echo h($_POST['email']); ?>">
