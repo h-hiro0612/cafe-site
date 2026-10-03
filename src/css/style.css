@@ -658,6 +658,10 @@ footer small {
     margin: 0;
     padding-left: 0;
     }
+
+    .footer_content {
+        padding: 64px 0 24px;
+    }
 }
 
 @media (hover: hover) {
@@ -780,6 +784,31 @@ span.required {
 
 .contact-complete p {
     text-align: center;
+}
+
+@media(max-width: 767px) {
+    form.form {
+        padding: 0 16px;
+        margin-top: 48px;
+    }
+
+    .form-group {
+        display: block;
+    }
+
+    .form-group input {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 12px;
+    }
+
+    .form-group textarea {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 12px;
+    }
 }
 
 
