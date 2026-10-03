@@ -13,7 +13,7 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 2 // 接続タイムアウト（2秒）
     ]);
-} catch (PDOException $e) {
+} catch (Throwable $e) {
     // 画面にエラーを出力（echo）せず、サーバーのログにのみ記録
     error_log("DB接続失敗: " . $e->getMessage());
     $pdo = null; // $pdo を null にして以降の処理を安全に継続
