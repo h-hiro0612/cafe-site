@@ -45,9 +45,9 @@ function createMailer() {
         $mail->Username   = $username;
         $mail->Password   = $password;
 
-        // STARTTLS と ポート587 を明示的に指定
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = (int)$port;
+       
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = 465;
 
         // クラウド環境での SSL/TLS 接続時の検証エラーによる接続失敗を防止
         $mail->SMTPOptions = [
