@@ -1,4 +1,4 @@
-<!-- <?php require_once __DIR__ . '/../dbconnect.php'; ?> -->
+<?php require_once __DIR__ . '/../dbconnect.php'; ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
