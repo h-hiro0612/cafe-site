@@ -1,7 +1,7 @@
 <?php include __DIR__ . '/includes/header.php'; ?>
 <?php include __DIR__ . '/includes/function.php'; ?>
 <?php
-// PHPMailerの読み込み（autoload.phpのパスはプロジェクト構造に合わせて調整してください）
+// PHPMailerの読み込み
 require_once __DIR__ . '/vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -18,24 +18,27 @@ function createMailer() {
     $mail = new PHPMailer(true);
     $mail->isSMTP();
     $mail->CharSet = 'UTF-8';
-
     $mail->Timeout = 10;
 
-    // getenv, $_ENV, $_SERVER のいずれかで APP_ENV を取得
+    // APP_ENV の取得（getenv / $_ENV / $_SERVER から順に確認）
     $app_env = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? ($_SERVER['APP_ENV'] ?? 'local'));
 
     // 環境変数 APP_ENV による自動分岐
     if ($app_env === 'production') {
         // 【本番環境：Render】
-        // 環境変数を確実に取り出す
-        $host     = getenv('MAIL_HOST')     ?: ($_ENV['MAIL_HOST']     ?? 'smtp.resend.com');
-        $username = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? 'resend');
-        $password = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? '');
-        $port     = getenv('MAIL_PORT')     ?: ($_ENV['MAIL_PORT']     ?? 587);
+        $host     = getenv('MAIL_HOST')     ?: ($_ENV['MAIL_HOST']     ?? ($_SERVER['MAIL_HOST']     ?? 'smtp.resend.com'));
+        $username = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? ($_SERVER['MAIL_USERNAME'] ?? 'resend'));
+        $port     = getenv('MAIL_PORT')     ?: ($_ENV['MAIL_PORT']     ?? ($_SERVER['MAIL_PORT']     ?? 587));
 
-        // 万が一パスワード（APIキー）が空の場合は強制的にエラーを出す
+        // APIキー（パスワード）の取得：RESEND_API_KEY または MAIL_PASSWORD のどちらでも読み込めるように設定
+        $password = getenv('RESEND_API_KEY') ?: ($_ENV['RESEND_API_KEY'] ?? ($_SERVER['RESEND_API_KEY'] ?? ''));
         if (empty($password)) {
-            throw new Exception("Renderの環境変数（MAIL_PASSWORD）が読み込めていません。");
+            $password = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? ($_SERVER['MAIL_PASSWORD'] ?? ''));
+        }
+
+        // 万が一どちらのキー名でも設定値が取得できなかった場合のエラー
+        if (empty($password)) {
+            throw new Exception("Renderの環境変数（RESEND_API_KEY または MAIL_PASSWORD）が読み込めていません。RenderのEnvironment設定をご確認ください。");
         }
 
         $mail->Host       = $host;
@@ -46,17 +49,25 @@ function createMailer() {
         $mail->Port       = (int)$port;
     } else {
         // 【ローカル環境 or APP_ENVが取得できていない場合】
-        // デバッグ用：もし本番でここを通ってしまったら気づけるようにエラーを投げる
         throw new Exception("APP_ENVが判定できませんでした。（現在の判定値: '{$app_env}'）");
     }
     return $mail;
 }
 
 try {
-    // 本番環境（Resend初期状態）の場合、送信元は onboarding@resend.dev を使用
-    // ※管理者通知の受信用メールアドレス（自分のGmailなど）は環境変数または直接指定
-    $from_email   = (getenv('APP_ENV') === 'production') ? 'onboarding@resend.dev' : (getenv('SMTP_USER') ?: 'admin@example.com');
-    $admin_email  = getenv('ADMIN_EMAIL') ?: (getenv('SMTP_USER') ?: 'admin@example.com');
+    // APP_ENV の再判定
+    $app_env = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? ($_SERVER['APP_ENV'] ?? 'local'));
+
+    // 送信元メールアドレスの取得
+    $from_email  = ($app_env === 'production') 
+                    ? (getenv('MAIL_FROM_ADDRESS') ?: ($_ENV['MAIL_FROM_ADDRESS'] ?? ($_SERVER['MAIL_FROM_ADDRESS'] ?? 'onboarding@resend.dev'))) 
+                    : 'admin@example.com';
+
+    // 管理者通知用アドレスの取得（ADMIN_EMAIL や SMTP_USER などを順に探す）
+    $admin_email = getenv('ADMIN_EMAIL') ?: ($_ENV['ADMIN_EMAIL'] ?? ($_SERVER['ADMIN_EMAIL'] ?? ''));
+    if (empty($admin_email)) {
+        $admin_email = getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? ($_SERVER['SMTP_USER'] ?? 'admin@example.com'));
+    }
 
     // 1. 管理者宛てメールの送信
     $adminMail = createMailer();
@@ -99,7 +110,7 @@ try {
     }
 
 } catch (Exception $e) {
-    // 開発時の確認用ログ（本番ではエラーログ出力など）
+    // 送信エラー時の赤枠表示
     echo "<div style='color:red; background:#fee; padding:15px; margin:20px; border:1px solid red;'>";
     echo "<h3>メール送信エラーが発生しました</h3>";
     echo "<p>エラー詳細: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
