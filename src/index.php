@@ -87,7 +87,7 @@ include __DIR__ . '/includes/function.php';
                         <button class="dot" data-index="2"></button>
                     </div>
 
-                    <a href="#">
+                    <a href="./menu.php">
                         <div class="more_btn">
                         もっと見る
                         </div>   
